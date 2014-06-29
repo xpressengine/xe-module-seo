@@ -1,1 +1,3 @@
-node_modules
+.gitattributes
+node_modules/
+build/
