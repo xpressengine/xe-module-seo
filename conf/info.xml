@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="0.2">
+	<title xml:lang="ko">SEO</title>
+	<description xml:lang="ko">XE 검색엔진 최적화</description>
+	<version>0.1.0</version>
+	<date>2014-06-29</date>
+	<license>Public Domain</license>
+	<author link="https://github.com/xe-public">
+		<name xml:lang="ko">XE Public</name>
+	</author>
+</module>

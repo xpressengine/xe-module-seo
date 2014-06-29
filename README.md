@@ -1,2 +1,2 @@
-xe-module-seo
-=============
+XpressEngine SEO
+================
