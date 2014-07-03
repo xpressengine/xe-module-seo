@@ -75,25 +75,6 @@
 				</div>
 			</div>
 		</section>
-
-		<section class="section <!--@if(!$config->fb_app_id && !$config->fb_admins)-->collapsed<!--@endif-->">
-			<h1>Facebook</h1>
-			<p class="x_well x_well-small">페이스북 앱의 정보를 설정할 수 있습니다. 부가적인 기능이며 페이스북 앱 설정이 필요한 때만 입력하세요.</p>
-			<div class="x_control-group">
-				<label class="x_control-label" for="fb_app_id">Facebook App ID</label>
-				<div class="x_controls">
-					<input type="text" name="fb_app_id" id="fb_app_id" value="{$config->fb_app_id}" />
-					<p class="x_help-inline">페이스북 앱의 app_id</p>
-				</div>
-			</div>
-			<div class="x_control-group">
-				<label class="x_control-label" for="fb_admins">Facebook Admin</label>
-				<div class="x_controls">
-					<input type="text" name="fb_admins" id="fb_admins" value="{$config->fb_admins}" />
-					<p class="x_help-block">페이스북 앱의 관리자. 이메일이나 페이스북의 개인 주소가 아닌 숫자로 된 고유ID를 입력해야 합니다. 여러명을 지정 시 콤마(,)로 구분.</p>
-				</div>
-			</div>
-		</section>
 	</block>
 
 	<!--// analytics -->
@@ -141,6 +122,28 @@
 				<label class="x_control-label" for="na_except_admin">관리자 제외</label>
 				<div class="x_controls">
 					<label><input type="checkbox" name="na_except_admin" id="na_except_admin" value="Y" checked="checked"|cond="$config->na_except_admin == 'Y'" /> 관리자 접속 시 추적 코드를 사용하지 않음</label>
+				</div>
+			</div>
+		</section>
+	</block>
+
+	<!--// analytics -->
+	<block cond="$setting_section == 'miscellaneous'">
+		<section class="section <!--@if(false && !$config->fb_app_id && !$config->fb_admins)-->collapsed<!--@endif-->">
+			<h1>Facebook</h1>
+			<p class="x_well x_well-small">페이스북 앱 연동 설정이 필요한 때 활용할 수 있습니다.</p>
+			<div class="x_control-group">
+				<label class="x_control-label" for="fb_app_id">Facebook App ID</label>
+				<div class="x_controls">
+					<input type="text" name="fb_app_id" id="fb_app_id" value="{$config->fb_app_id}" />
+					<p class="x_help-inline">페이스북 앱의 app_id</p>
+				</div>
+			</div>
+			<div class="x_control-group">
+				<label class="x_control-label" for="fb_admins">Facebook Admin</label>
+				<div class="x_controls">
+					<input type="text" name="fb_admins" id="fb_admins" value="{$config->fb_admins}" />
+					<p class="x_help-block">페이스북 앱의 관리자. 이메일이나 페이스북의 개인 주소가 아닌 숫자로 된 고유ID를 입력해야 합니다. 여러명을 지정 시 콤마(,)로 구분.</p>
 				</div>
 			</div>
 		</section>

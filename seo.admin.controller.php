@@ -34,6 +34,12 @@ class seoAdminController extends seo
 			// Naver
 			$config->na_id = trim($vars->na_id);
 			$config->na_except_admin = $vars->na_except_admin;
+		} elseif ($vars->setting_section == 'miscellaneous') {
+			// miscellaneous
+
+			// Facebook
+			$config->fb_app_id = trim($vars->fb_app_id);
+			$config->fb_admins = trim($vars->fb_admins);
 		}
 
 		$config->site_image_url = NULL;
