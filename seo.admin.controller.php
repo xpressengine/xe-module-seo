@@ -17,7 +17,7 @@ class seoAdminController extends seo
 			$config->site_keywords = $vars->site_keywords;
 			if ($vars->site_image) {
 				$path = _XE_PATH_ . 'files/attach/site_image/';
-				$ext = array_pop(explode('.', $vars->site_image['name']));
+				$ext = strtolower(array_pop(explode('.', $vars->site_image['name'])));
 				$timestamp = time();
 				$filename = "site_image.{$timestamp}.{$ext}";
 				FileHandler::copyFile($vars->site_image['tmp_name'], $path . $filename);
@@ -29,11 +29,16 @@ class seoAdminController extends seo
 			// Google
 			$config->ga_id = trim($vars->ga_id);
 			$config->ga_except_admin = $vars->ga_except_admin;
-			$config->ga_track_subdomain = $vars->ga_track_subdomain;
 
 			// Naver
 			$config->na_id = trim($vars->na_id);
 			$config->na_except_admin = $vars->na_except_admin;
+		} elseif ($vars->setting_section == 'miscellaneous') {
+			// miscellaneous
+
+			// Facebook
+			$config->fb_app_id = trim($vars->fb_app_id);
+			$config->fb_admins = trim($vars->fb_admins);
 		}
 
 		$config->site_image_url = NULL;

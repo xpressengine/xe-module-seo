@@ -27,7 +27,8 @@
 		<section class="section">
 			<h1>문서 제목 최적화</h1>
 			<p class="x_well x_well-small">
-				사이트 이름 및 문서의 제목을 효과적으로 표시할 수 있습니다.
+				<em class="x_label x_label-success">사용 권장</em> 사이트 이름 및 문서의 제목을 효과적으로 표시할 수 있습니다.
+				<br>
 				<br>
 				<span class="x_label x_label-info">예시 - 메인 페이지</span> '사이트 이름 - 사이트 부제'
 				<br>
@@ -59,7 +60,7 @@
 
 		<section class="section">
 			<h1>기본 메타태그</h1>
-			<p class="x_well x_well-small">사이트 전역에 사용 될 &lt;meta&gt; 태그 설정.</p>
+			<p class="x_well x_well-small">사이트 전역에 사용 될 <code>&lt;meta&gt;</code> 태그 설정.</p>
 			<div class="x_control-group">
 				<label class="x_control-label" for="lang_site_keywords">사이트 키워드 (keywords)</label>
 				<div class="x_controls">
@@ -72,25 +73,6 @@
 				<div class="x_controls">
 					<input type="text" name="site_description" id="site_description" value="<!--@if(strpos($config->site_description, '$user_lang->') === false)-->{$config->site_description}<!--@else-->{htmlspecialchars($config->site_description)}<!--@end-->" class="lang_code x_input-xxlarge" />
 					<p class="x_help-block">사이트의 주제에 관한 설명. 200자 미만으로 너무 길지 않고 의도적으로 너무 많은 키워드를 반복하는 것은 좋지 않습니다.</p>
-				</div>
-			</div>
-		</section>
-
-		<section class="section <!--@if(!$config->fb_app_id && !$config->fb_admins)-->collapsed<!--@endif-->">
-			<h1>Facebook</h1>
-			<p class="x_well x_well-small">페이스북 앱의 정보를 설정할 수 있습니다. 부가적인 기능이며 페이스북 앱 설정이 필요한 때만 입력하세요.</p>
-			<div class="x_control-group">
-				<label class="x_control-label" for="fb_app_id">Facebook App ID</label>
-				<div class="x_controls">
-					<input type="text" name="fb_app_id" id="fb_app_id" value="{$config->fb_app_id}" />
-					<p class="x_help-inline">페이스북 앱의 app_id</p>
-				</div>
-			</div>
-			<div class="x_control-group">
-				<label class="x_control-label" for="fb_admins">Facebook Admin</label>
-				<div class="x_controls">
-					<input type="text" name="fb_admins" id="fb_admins" value="{$config->fb_admins}" />
-					<p class="x_help-block">페이스북 앱의 관리자. 이메일이나 페이스북의 개인 주소가 아닌 숫자로 된 고유ID를 입력해야 합니다. 여러명을 지정 시 콤마(,)로 구분.</p>
 				</div>
 			</div>
 		</section>
@@ -108,13 +90,6 @@
 				<label class="x_control-label" for="ga_id">속성 ID</label>
 				<div class="x_controls">
 					<input type="text" name="ga_id" id="ga_id" value="{$config->ga_id}" placeholder="UA-XXXXXXXX-X" />
-				</div>
-			</div>
-			<div class="x_control-group">
-				<label class="x_control-label" for="ga_track_subdomain">서브 도메인 추적</label>
-				<div class="x_controls">
-					<label><input type="checkbox" name="ga_track_subdomain" id="ga_track_subdomain" value="Y" checked="checked"|cond="$config->ga_track_subdomain == 'Y'" /> 서브 도메인 추적 사용</label>
-					<p class="x_help-block">'{$hostname}'에 대한 서브 도메인 모두를 통계에 포함합니다.</p>
 				</div>
 			</div>
 			<div class="x_control-group">
@@ -141,6 +116,28 @@
 				<label class="x_control-label" for="na_except_admin">관리자 제외</label>
 				<div class="x_controls">
 					<label><input type="checkbox" name="na_except_admin" id="na_except_admin" value="Y" checked="checked"|cond="$config->na_except_admin == 'Y'" /> 관리자 접속 시 추적 코드를 사용하지 않음</label>
+				</div>
+			</div>
+		</section>
+	</block>
+
+	<!--// analytics -->
+	<block cond="$setting_section == 'miscellaneous'">
+		<section class="section <!--@if(false && !$config->fb_app_id && !$config->fb_admins)-->collapsed<!--@endif-->">
+			<h1>Facebook</h1>
+			<p class="x_well x_well-small">페이스북 앱 연동 설정이 필요한 때 활용할 수 있습니다.</p>
+			<div class="x_control-group">
+				<label class="x_control-label" for="fb_app_id">Facebook App ID</label>
+				<div class="x_controls">
+					<input type="text" name="fb_app_id" id="fb_app_id" value="{$config->fb_app_id}" />
+					<p class="x_help-inline">페이스북 앱의 app_id</p>
+				</div>
+			</div>
+			<div class="x_control-group">
+				<label class="x_control-label" for="fb_admins">Facebook Admin</label>
+				<div class="x_controls">
+					<input type="text" name="fb_admins" id="fb_admins" value="{$config->fb_admins}" />
+					<p class="x_help-block">페이스북 앱의 관리자. 이메일이나 페이스북의 개인 주소가 아닌 숫자로 된 고유ID를 입력해야 합니다. 여러명을 지정 시 콤마(,)로 구분.</p>
 				</div>
 			</div>
 		</section>

@@ -69,26 +69,22 @@ class seo extends ModuleObject
 		// Google Analytics
 		if ($config->ga_id && !($config->ga_except_admin == 'Y' && $logged_info->is_admin == 'Y')) {
 			$gaq_push = array();
-			$gaq_push[] = '_gaq.push([\'_setAccount\', \'' . $config->ga_id . '\']);';
-			if ($config->ga_track_subdomain) {
-				$db_info = Context::getDBInfo();
-				$default_url = parse_url($db_info->default_url);
-				$gaq_push[] = '_gaq.push([\'_setDomainName\', \'' . $default_url['host'] . '\']);';
-			}
-			$gaq_push[] = '_gaq.push([\'_trackPageview\', \'' . str_replace(Context::get('request_uri'), '/', $this->canonical_url) . '\']);';
+			// $gaq_push[] = '_gaq.push([\'_setAccount\', \'' . $config->ga_id . '\']);';
+			$gaq_push[] = "ga('create', '{$config->ga_id}', 'auto');";
+			$canonical_url = str_replace(Context::get('request_uri'), '/', $this->canonical_url);
+			$gaq_push[] = "ga('send', 'pageview', '{$canonical_url}');";
 			$gaq_push = implode(PHP_EOL, $gaq_push);
 
 			$ga_script = <<< GASCRIPT
-			<!-- Google Analytics -->
-			<script type="text/javascript">
-				var _gaq = _gaq || [];
-				{$gaq_push}
-				(function() {
-					var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-					var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-				})();
-			</script>
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+{$gaq_push}
+</script>
 GASCRIPT;
 
 			Context::addHtmlHeader($ga_script . PHP_EOL);
@@ -101,8 +97,9 @@ GASCRIPT;
 			$wcs_add = implode(' ', $wcs_add);
 
 			$na_script = <<< NASCRIPT
-			<!-- Naver Analytics -->
-			<script type="text/javascript" src="http://wcs.naver.net/wcslog.js"></script> <script type="text/javascript"> if(!wcs_add) var wcs_add = {}; {$wcs_add} wcs_do(); </script>
+<!-- Naver Analytics -->
+<script type="text/javascript" src="http://wcs.naver.net/wcslog.js"></script>
+<script type="text/javascript"> if(!wcs_add) var wcs_add = {}; {$wcs_add} wcs_do(); </script>
 NASCRIPT;
 			Context::addHtmlHeader($na_script . PHP_EOL);
 		}
