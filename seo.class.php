@@ -97,8 +97,9 @@ GASCRIPT;
 			$wcs_add = implode(' ', $wcs_add);
 
 			$na_script = <<< NASCRIPT
-			<!-- Naver Analytics -->
-			<script type="text/javascript" src="http://wcs.naver.net/wcslog.js"></script> <script type="text/javascript"> if(!wcs_add) var wcs_add = {}; {$wcs_add} wcs_do(); </script>
+<!-- Naver Analytics -->
+<script type="text/javascript" src="http://wcs.naver.net/wcslog.js"></script>
+<script type="text/javascript"> if(!wcs_add) var wcs_add = {}; {$wcs_add} wcs_do(); </script>
 NASCRIPT;
 			Context::addHtmlHeader($na_script . PHP_EOL);
 		}

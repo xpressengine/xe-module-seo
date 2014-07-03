@@ -17,7 +17,7 @@ class seoAdminController extends seo
 			$config->site_keywords = $vars->site_keywords;
 			if ($vars->site_image) {
 				$path = _XE_PATH_ . 'files/attach/site_image/';
-				$ext = array_pop(explode('.', $vars->site_image['name']));
+				$ext = strtolower(array_pop(explode('.', $vars->site_image['name'])));
 				$timestamp = time();
 				$filename = "site_image.{$timestamp}.{$ext}";
 				FileHandler::copyFile($vars->site_image['tmp_name'], $path . $filename);
