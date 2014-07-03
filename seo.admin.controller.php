@@ -29,7 +29,6 @@ class seoAdminController extends seo
 			// Google
 			$config->ga_id = trim($vars->ga_id);
 			$config->ga_except_admin = $vars->ga_except_admin;
-			$config->ga_track_subdomain = $vars->ga_track_subdomain;
 
 			// Naver
 			$config->na_id = trim($vars->na_id);
