@@ -59,7 +59,8 @@ class seo extends ModuleObject
 
 			foreach ($list as $val) {
 				if ($type == 'meta') {
-					Context::addHtmlHeader('<meta property="' . $val['property'] . '" content="' . $val['content'] . '" />');
+					$key = (strpos($val['property'], 'og:') === 0) ? 'property' : 'name';
+					Context::addHtmlHeader('<meta ' . $key . '="' . $val['property'] . '" content="' . $val['content'] . '" />');
 				} elseif ($type == 'link') {
 					Context::addHtmlHeader('<link rel="' . $val['rel'] . '" href="' . $val['href'] . '" />');
 				}
