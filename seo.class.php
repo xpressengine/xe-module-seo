@@ -93,16 +93,12 @@ GASCRIPT;
 
 		// Naver Analytics
 		if ($config->na_id && !($config->na_except_admin == 'Y' && $logged_info->is_admin == 'Y')) {
-			$wcs_add = array();
-			$wcs_add[] = "wcs_add['wa'] = '{$config->na_id}';";
-			$wcs_add = implode(' ', $wcs_add);
-
 			$na_script = <<< NASCRIPT
-<!-- Naver Analytics -->
-<script type="text/javascript" src="http://wcs.naver.net/wcslog.js"></script>
-<script type="text/javascript"> if(!wcs_add) var wcs_add = {}; {$wcs_add} wcs_do(); </script>
+<!-- NAVER Analytics -->
+<script src="//wcs.naver.net/wcslog.js"></script>
+<script>if(!wcs_add){var wcs_add={wa:'{$config->na_id}'};}if(typeof wcs_do!="undefined"){wcs_do();}</script>
 NASCRIPT;
-			Context::addHtmlHeader($na_script . PHP_EOL);
+			Context::addHtmlFooter($na_script . PHP_EOL);
 		}
 	}
 
