@@ -28,7 +28,7 @@ class seo extends ModuleObject
 		return $config;
 	}
 
-	public function addMeta($property, $content)
+	public function addMeta($property, $content, $attr_name = 'property')
 	{
 		if (!$content) return;
 
@@ -39,7 +39,7 @@ class seo extends ModuleObject
 			$content = str_replace(PHP_EOL, ' ', $content);
 		}
 
-		$this->SEO['meta'][] = array('property' => $property, 'content' => $content);
+		$this->SEO['meta'][] = array('property' => $property, 'content' => $content, 'attr_name' => $attr_name);
 	}
 
 	public function addLink($rel, $href)
@@ -59,8 +59,8 @@ class seo extends ModuleObject
 
 			foreach ($list as $val) {
 				if ($type == 'meta') {
-					$key = (strpos($val['property'], 'og:') === 0) ? 'property' : 'name';
-					Context::addHtmlHeader('<meta ' . $key . '="' . $val['property'] . '" content="' . $val['content'] . '" />');
+					$attr_name = $val['attr_name'];
+					Context::addHtmlHeader('<meta ' . $attr_name . '="' . $val['property'] . '" content="' . $val['content'] . '" />');
 				} elseif ($type == 'link') {
 					Context::addHtmlHeader('<link rel="' . $val['rel'] . '" href="' . $val['href'] . '" />');
 				}

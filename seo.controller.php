@@ -120,8 +120,8 @@ class seoController extends seo
 		if ($config->site_image_url) $piece->image[] = $config->site_image_url;
 
 		$this->addLink('canonical', $piece->url);
-		$this->addMeta('keywords', $piece->keywords);
-		$this->addMeta('description', $piece->description);
+		$this->addMeta('keywords', $piece->keywords, 'name');
+		$this->addMeta('description', $piece->description, 'name');
 
 		// Open Graph
 		$this->addMeta('og:type', $piece->type);
