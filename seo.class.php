@@ -36,7 +36,7 @@ class seo extends ModuleObject
 		$oModuleController->replaceDefinedLangCode($content);
 		if (!in_array($property, array('og:url'))) {
 			$content = htmlspecialchars($content);
-			$content = str_replace(PHP_EOL, ' ', $content);
+			$content = preg_replace("/(\s+)/", ' ', $content);
 		}
 
 		$this->SEO['meta'][] = array('property' => $property, 'content' => $content, 'attr_name' => $attr_name);
