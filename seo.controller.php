@@ -118,9 +118,9 @@ class seoController extends seo
 
 		$piece->title = $this->getBrowserTitle($piece->document_title);
 		if ($config->site_image_url) {
-			list($width, $height) = @getimagesize($config->site_image);
+			list($width, $height) = @getimagesize('files/attach/site_image/' . $config->site_image);
 			$piece->image[] = array(
-				'url' => $config->site_image,
+				'url' => $config->site_image_url,
 				'width' => $width,
 				'height' => $height
 			);
