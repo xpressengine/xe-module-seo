@@ -61,6 +61,7 @@ class seoController extends seo
 		$piece->title = Context::getBrowserTitle();
 		$piece->description = $config->site_description;
 		$piece->keywords = $config->site_keywords;
+		$piece->tags = array();
 		$piece->image = array();
 		$piece->author = null;
 
@@ -84,10 +85,8 @@ class seoController extends seo
 				$piece->type = 'article';
 				$piece->description = trim(str_replace('&nbsp;', ' ', $oDocument->getContentText(400)));
 				$piece->author = $oDocument->getNickName();
-				if (count($oDocument->get('tag_list'))) {
-					$tags = implode(',', $oDocument->get('tag_list'));
-					if ($tags) $piece->keywords = $tags;
-				}
+				$tags = $oDocument->get('tag_list');
+				if (count($tags)) $piece->tags = $tags;
 
 				if ($oDocument->hasUploadedFiles()) {
 					$image_ext = array('bmp', 'gif', 'jpg', 'jpeg', 'png');
@@ -136,7 +135,9 @@ class seoController extends seo
 		$this->addMeta('og:site_name', $config->site_name);
 		$this->addMeta('og:title', $piece->title);
 		$this->addMeta('og:description', $piece->description);
-		$this->addMeta('og:article:author', $piece->author);
+		foreach ($piece->tags as $tag) {
+			$this->addMeta('og:article:tag', $tag);
+		}
 		foreach ($piece->image as $img) {
 			$this->addMeta('og:image', $img['url']);
 			$this->addMeta('og:image:width', $img['width']);
