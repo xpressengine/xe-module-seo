@@ -117,7 +117,14 @@ class seoController extends seo
 		}
 
 		$piece->title = $this->getBrowserTitle($piece->document_title);
-		if ($config->site_image_url) $piece->image[] = $config->site_image_url;
+		if ($config->site_image_url) {
+			list($width, $height) = @getimagesize($config->site_image);
+			$piece->image[] = array(
+				'url' => $config->site_image,
+				'width' => $width,
+				'height' => $height
+			);
+		}
 
 		$this->addLink('canonical', $piece->url);
 		$this->addMeta('keywords', $piece->keywords, 'name');
