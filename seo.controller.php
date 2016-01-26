@@ -97,7 +97,13 @@ class seoController extends seo
 						$ext = array_pop(explode('.', $file->uploaded_filename));
 
 						if (!in_array(strtolower($ext), $image_ext)) continue;
-						$piece->image[] = Context::get('request_uri') . $file->uploaded_filename;
+						list($width, $height) = @getimagesize($file->uploaded_filename);
+
+						$piece->image[] = array(
+							'url' => Context::get('request_uri') . $file->uploaded_filename,
+							'width' => $width,
+							'height' => $height
+						);
 					}
 				}
 			} else {
@@ -125,7 +131,9 @@ class seoController extends seo
 		$this->addMeta('og:description', $piece->description);
 		$this->addMeta('og:article:author', $piece->author);
 		foreach ($piece->image as $img) {
-			$this->addMeta('og:image', $img);
+			$this->addMeta('og:image', $img['url']);
+			$this->addMeta('og:image:width', $img['width']);
+			$this->addMeta('og:image:height', $img['height']);
 		}
 
 		$this->canonical_url = $piece->url;
