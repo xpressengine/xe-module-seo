@@ -135,8 +135,12 @@ class seoController extends seo
 		$this->addMeta('og:site_name', $config->site_name);
 		$this->addMeta('og:title', $piece->title);
 		$this->addMeta('og:description', $piece->description);
-		foreach ($piece->tags as $tag) {
-			$this->addMeta('og:article:tag', $tag);
+		if($is_article) {
+			$this->addMeta('article:published_time', $oDocument->getRegdate('c'));
+			$this->addMeta('article:modified_time', $oDocument->getUpdate('c'));
+			foreach ($piece->tags as $tag) {
+				$this->addMeta('article:tag', $tag);
+			}
 		}
 		foreach ($piece->image as $img) {
 			$this->addMeta('og:image', $img['url']);
