@@ -68,6 +68,7 @@ class seoController extends seo
 		$site_module_info = Context::get('site_module_info');
 		$document_srl = Context::get('document_srl');
 		$is_article = false;
+		$single_image = false;
 		$is_index = ($current_module_info->module_srl == $site_module_info->module_srl) ? true : false;
 
 		$piece = new stdClass;
@@ -80,6 +81,10 @@ class seoController extends seo
 		$piece->tags = array();
 		$piece->image = array();
 		$piece->author = null;
+
+		if(stristr($_SERVER['HTTP_USER_AGENT'], 'facebookexternalhit') != FALSE) {
+			$single_image = true;
+		}
 
 		if ($document_srl) {
 			$oDocument = Context::get('oDocument');
@@ -114,11 +119,17 @@ class seoController extends seo
 						if (!in_array(strtolower($ext), $image_ext)) continue;
 						list($width, $height) = @getimagesize($file->uploaded_filename);
 
-						$piece->image[] = array(
+						$image = array(
 							'url' => Context::get('request_uri') . $file->uploaded_filename,
 							'width' => $width,
 							'height' => $height
 						);
+
+						if($file->cover_image === 'Y') {
+							array_unshift($piece->image, $image);
+						} else {
+							$piece->image[] = $image;
+						}
 					}
 				}
 			} else {
@@ -162,10 +173,12 @@ class seoController extends seo
 				$this->addMeta('article:tag', $tag);
 			}
 		}
+
 		foreach ($piece->image as $img) {
 			$this->addMeta('og:image', $img['url']);
 			$this->addMeta('og:image:width', $img['width']);
 			$this->addMeta('og:image:height', $img['height']);
+			if($single_image) break;
 		}
 
 		$this->canonical_url = $piece->url;
