@@ -22,6 +22,17 @@ class seoAdminController extends seo
 				$filename = "site_image.{$timestamp}.{$ext}";
 				FileHandler::copyFile($vars->site_image['tmp_name'], $path . $filename);
 				$config->site_image = $filename;
+
+				$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+				if($oCacheHandler->isSupport()) {
+					list($width, $height) = @getimagesize($path . $filename);
+					$site_image_dimension = array(
+						'width' => $width,
+						'height' => $height
+					);
+					$cache_key = 'seo:site_image';
+					$oCacheHandler->put($cache_key, $site_image_dimension);
+				}
 			}
 		} elseif ($vars->setting_section == 'analytics') {
 			// analytics

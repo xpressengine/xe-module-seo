@@ -9,7 +9,10 @@ class seo extends ModuleObject
 	protected $canonical_url;
 
 	private $triggers = array(
-		array('display', 'seo', 'controller', 'triggerBeforeDisplay', 'before')
+		array('display', 'seo', 'controller', 'triggerBeforeDisplay', 'before'),
+		array('file.deleteFile', 'seo', 'controller', 'triggerAfterFileDeleteFile', 'after'),
+		array('document.updateDocument', 'seo', 'controller', 'triggerAfterDocumentUpdateDocument', 'after'),
+		array('document.deleteDocument', 'seo', 'controller', 'triggerAfterDocumentDeleteDocument', 'after')
 	);
 
 	public function getConfig()

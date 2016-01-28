@@ -44,6 +44,8 @@ class seoController extends seo
 		if (Context::getResponseMethod() != 'HTML') return;
 		if (Context::get('module') == 'admin') return;
 
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+
 		$locales = array(
 			'de' => 'de_DE',
 			'en' => 'en_US',
@@ -109,8 +111,16 @@ class seoController extends seo
 				$tags = $oDocument->get('tag_list');
 				if (count($tags)) $piece->tags = $tags;
 
-				if ($oDocument->hasUploadedFiles()) {
+				$document_images = false;
+				if($oCacheHandler->isSupport()) {
+					$cache_key_document_images = 'seo:document_images:' . $document_srl;
+					$document_images = $oCacheHandler->get($cache_key_document_images);
+				}
+
+				if($document_images === false && $oDocument->hasUploadedFiles()) {
 					$image_ext = array('bmp', 'gif', 'jpg', 'jpeg', 'png');
+					$document_images = array();
+
 					foreach ($oDocument->getUploadedFiles() as $file) {
 						if ($file->isvalid != 'Y') continue;
 
@@ -118,20 +128,27 @@ class seoController extends seo
 
 						if (!in_array(strtolower($ext), $image_ext)) continue;
 						list($width, $height) = @getimagesize($file->uploaded_filename);
+						if($width < 100 && $height < 100) continue;
 
 						$image = array(
-							'url' => Context::get('request_uri') . $file->uploaded_filename,
+							'filepath' => $file->uploaded_filename,
 							'width' => $width,
 							'height' => $height
 						);
 
 						if($file->cover_image === 'Y') {
-							array_unshift($piece->image, $image);
+							array_unshift($document_images, $image);
 						} else {
-							$piece->image[] = $image;
+							$document_images[] = $image;
 						}
 					}
+
+					if($oCacheHandler->isSupport()) {
+						$oCacheHandler->put($cache_key_document_images, $document_images);
+					}
 				}
+
+				if($document_images) $piece->image = $document_images;
 			} else {
 				$piece->url = getFullUrl('', 'mid', $current_module_info->mid);
 			}
@@ -143,13 +160,14 @@ class seoController extends seo
 		}
 
 		$piece->title = $this->getBrowserTitle($piece->document_title);
-		if ($config->site_image_url) {
-			list($width, $height) = @getimagesize('files/attach/site_image/' . $config->site_image);
-			$piece->image[] = array(
-				'url' => $config->site_image_url,
-				'width' => $width,
-				'height' => $height
-			);
+
+		if($oCacheHandler->isSupport()) {
+			$cache_key = 'seo:site_image';
+			$site_image = $oCacheHandler->get($cache_key);
+			if($site_image) {
+				$site_image['url'] = $config->site_image_url;
+			}
+			$piece->image[] = $site_image;
 		}
 
 		$this->addLink('canonical', $piece->url);
@@ -175,6 +193,11 @@ class seoController extends seo
 		}
 
 		foreach ($piece->image as $img) {
+			if(!$img['url']) {
+				if(!$img['filepath']) continue;
+				$img['url'] = Context::get('request_uri') . $img['filepath'];
+			}
+
 			$this->addMeta('og:image', $img['url']);
 			$this->addMeta('og:image:width', $img['width']);
 			$this->addMeta('og:image:height', $img['height']);
@@ -186,6 +209,35 @@ class seoController extends seo
 		$this->applySEO();
 
 		if ($config->use_optimize_title == 'Y') Context::setBrowserTitle($piece->title);
+	}
+
+	function triggerAfterFileDeleteFile($data)
+	{
+		$document_srl = $data->upload_target_srl;
+		if(!$document_srl) return new Object();
+
+		$this->deleteCacheDocumentImages($document_srl);
+	}
+
+	function triggerAfterDocumentUpdateDocument($data)
+	{
+		$document_srl = $data->document_srl;
+		$this->deleteCacheDocumentImages($document_srl);
+	}
+
+	function triggerAfterDocumentDeleteDocument($data)
+	{
+		$document_srl = $data->document_srl;
+		$this->deleteCacheDocumentImages($document_srl);
+	}
+
+	private function deleteCacheDocumentImages($document_srl)
+	{
+		$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+		if($oCacheHandler->isSupport()) {
+			$cache_key_document_images = 'seo:document_images:' . $document_srl;
+			$oCacheHandler->delete($cache_key_document_images);
+		}
 	}
 }
 /* !End of file */
