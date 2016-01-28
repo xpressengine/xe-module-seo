@@ -44,6 +44,22 @@ class seoController extends seo
 		if (Context::getResponseMethod() != 'HTML') return;
 		if (Context::get('module') == 'admin') return;
 
+		$locales = array(
+			'de' => 'de_DE',
+			'en' => 'en_US',
+			'es' => 'es_ES',
+			'fr' => 'fr_FR',
+			'ja' => 'ja_JP',
+			'jp' => 'ja_JP',
+			'ko' => 'ko_KR',
+			'mn' => 'mn_MN',
+			'ru' => 'ru_RU',
+			'tr' => 'tr_TR',
+			'vi' => 'vi_VN',
+			'zh-CN' => 'zh_CN',
+			'zh-TW' => 'zh_TW',
+		);
+
 		$oModuleModel = getModel('module');
 		$config = $this->getConfig();
 
@@ -130,12 +146,16 @@ class seoController extends seo
 		$this->addMeta('description', $piece->description, 'name');
 
 		// Open Graph
+		$this->addMeta('og:locale', $locales[Context::getLangType()]);
 		$this->addMeta('og:type', $piece->type);
 		$this->addMeta('og:url', $piece->url);
 		$this->addMeta('og:site_name', $config->site_name);
 		$this->addMeta('og:title', $piece->title);
 		$this->addMeta('og:description', $piece->description);
 		if($is_article) {
+			if(Context::getLangType() !== $oDocument->getLangCode()) {
+				$this->addMeta('og:locale:alternate', $locales[$oDocument->getLangCode()]);
+			}
 			$this->addMeta('article:published_time', $oDocument->getRegdate('c'));
 			$this->addMeta('article:modified_time', $oDocument->getUpdate('c'));
 			foreach ($piece->tags as $tag) {
