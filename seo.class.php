@@ -9,7 +9,10 @@ class seo extends ModuleObject
 	protected $canonical_url;
 
 	private $triggers = array(
-		array('display', 'seo', 'controller', 'triggerBeforeDisplay', 'before')
+		array('display', 'seo', 'controller', 'triggerBeforeDisplay', 'before'),
+		array('file.deleteFile', 'seo', 'controller', 'triggerAfterFileDeleteFile', 'after'),
+		array('document.updateDocument', 'seo', 'controller', 'triggerAfterDocumentUpdateDocument', 'after'),
+		array('document.deleteDocument', 'seo', 'controller', 'triggerAfterDocumentDeleteDocument', 'after')
 	);
 
 	public function getConfig()
@@ -28,7 +31,7 @@ class seo extends ModuleObject
 		return $config;
 	}
 
-	public function addMeta($property, $content)
+	public function addMeta($property, $content, $attr_name = 'property')
 	{
 		if (!$content) return;
 
@@ -36,10 +39,10 @@ class seo extends ModuleObject
 		$oModuleController->replaceDefinedLangCode($content);
 		if (!in_array($property, array('og:url'))) {
 			$content = htmlspecialchars($content);
-			$content = str_replace(PHP_EOL, ' ', $content);
+			$content = preg_replace("/(\s+)/", ' ', $content);
 		}
 
-		$this->SEO['meta'][] = array('property' => $property, 'content' => $content);
+		$this->SEO['meta'][] = array('property' => $property, 'content' => $content, 'attr_name' => $attr_name);
 	}
 
 	public function addLink($rel, $href)
@@ -59,7 +62,8 @@ class seo extends ModuleObject
 
 			foreach ($list as $val) {
 				if ($type == 'meta') {
-					Context::addHtmlHeader('<meta property="' . $val['property'] . '" content="' . $val['content'] . '" />');
+					$attr_name = $val['attr_name'];
+					Context::addHtmlHeader('<meta ' . $attr_name . '="' . $val['property'] . '" content="' . $val['content'] . '" />');
 				} elseif ($type == 'link') {
 					Context::addHtmlHeader('<link rel="' . $val['rel'] . '" href="' . $val['href'] . '" />');
 				}
@@ -92,16 +96,12 @@ GASCRIPT;
 
 		// Naver Analytics
 		if ($config->na_id && !($config->na_except_admin == 'Y' && $logged_info->is_admin == 'Y')) {
-			$wcs_add = array();
-			$wcs_add[] = "wcs_add['wa'] = '{$config->na_id}';";
-			$wcs_add = implode(' ', $wcs_add);
-
 			$na_script = <<< NASCRIPT
-<!-- Naver Analytics -->
-<script type="text/javascript" src="http://wcs.naver.net/wcslog.js"></script>
-<script type="text/javascript"> if(!wcs_add) var wcs_add = {}; {$wcs_add} wcs_do(); </script>
+<!-- NAVER Analytics -->
+<script src="//wcs.naver.net/wcslog.js"></script>
+<script>if(!wcs_add){var wcs_add={wa:'{$config->na_id}'};}if(typeof wcs_do!="undefined"){wcs_do();}</script>
 NASCRIPT;
-			Context::addHtmlHeader($na_script . PHP_EOL);
+			Context::addHtmlFooter($na_script . PHP_EOL);
 		}
 	}
 

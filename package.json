@@ -1,7 +1,7 @@
 {
   "name": "XE-SEO",
-  "version": "0.2.0",
-  "author": "XE Public",
+  "version": "1.8.0",
+  "author": "BNU",
   "contributors": [
     {
       "name" : "BNU",
@@ -9,13 +9,13 @@
     }
   ],
   "keywords": ["SEO","search engine optimization", "XpressEngine", "XE"],
-  "license": "Public Domain",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/xe-public/xe-module-seo.git"
+    "url": "git://github.com/xpressengine/xe-module-seo.git"
   },
   "bugs": {
-    "url" : "https://github.com/xe-public/xe-module-seo/issues"
+    "url" : "https://github.com/xpressengine/xe-module-seo/issues"
   },
   "devDependencies": {
     "grunt": ">0.4.0",
