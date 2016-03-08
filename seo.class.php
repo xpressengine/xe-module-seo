@@ -20,6 +20,7 @@ class seo extends ModuleObject
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('seo');
 		if (!$config) $config = new stdClass;
+		if (!$config->enable) $config->enable = 'Y';
 		if (!$config->use_optimize_title) $config->use_optimize_title = 'N';
 		if (!$config->ga_except_admin) $config->ga_except_admin = 'N';
 		if (!$config->ga_track_subdomain) $config->ga_track_subdomain = 'N';
@@ -131,8 +132,12 @@ NASCRIPT;
 	{
 		$oModuleModel = getModel('module');
 
-		foreach ($this->triggers as $trigger) {
-			if (!$oModuleModel->getTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4])) return TRUE;
+		$seo_config = $this->getConfig();
+
+		if($seo_config->enable === 'Y') {
+			foreach ($this->triggers as $trigger) {
+				if (!$oModuleModel->getTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4])) return TRUE;
+			}
 		}
 
 		return FALSE;
@@ -143,9 +148,13 @@ NASCRIPT;
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 
-		foreach ($this->triggers as $trigger) {
-			if (!$oModuleModel->getTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4])) {
-				$oModuleController->insertTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4]);
+		$seo_config = $this->getConfig();
+
+		if($seo_config->enable === 'Y') {
+			foreach ($this->triggers as $trigger) {
+				if (!$oModuleModel->getTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4])) {
+					$oModuleController->insertTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4]);
+				}
 			}
 		}
 
