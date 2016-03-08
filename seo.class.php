@@ -26,6 +26,23 @@ class seo extends ModuleObject
 		if ($config->site_image) 
 		{
 			$config->site_image_url = Context::get('request_uri') . 'files/attach/site_image/' . $config->site_image;
+
+			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+			if($oCacheHandler->isSupport()) {
+				$site_image = false;
+				$cache_key = 'seo:site_image';
+				$site_image = $oCacheHandler->get($cache_key);
+				if(!$site_image) {
+					$path = _XE_PATH_ . 'files/attach/site_image/';
+					list($width, $height) = @getimagesize($path . $config->site_image);
+					$site_image_dimension = array(
+						'width' => $width,
+						'height' => $height
+					);
+					$cache_key = 'seo:site_image';
+					$oCacheHandler->put($cache_key, $site_image_dimension);
+				}
+			}
 		}
 
 		return $config;
