@@ -20,12 +20,30 @@ class seo extends ModuleObject
 		$oModuleModel = getModel('module');
 		$config = $oModuleModel->getModuleConfig('seo');
 		if (!$config) $config = new stdClass;
+		if (!$config->enable) $config->enable = 'Y';
 		if (!$config->use_optimize_title) $config->use_optimize_title = 'N';
 		if (!$config->ga_except_admin) $config->ga_except_admin = 'N';
 		if (!$config->ga_track_subdomain) $config->ga_track_subdomain = 'N';
 		if ($config->site_image) 
 		{
 			$config->site_image_url = Context::get('request_uri') . 'files/attach/site_image/' . $config->site_image;
+
+			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+			if($oCacheHandler->isSupport()) {
+				$site_image = false;
+				$cache_key = 'seo:site_image';
+				$site_image = $oCacheHandler->get($cache_key);
+				if(!$site_image) {
+					$path = _XE_PATH_ . 'files/attach/site_image/';
+					list($width, $height) = @getimagesize($path . $config->site_image);
+					$site_image_dimension = array(
+						'width' => $width,
+						'height' => $height
+					);
+					$cache_key = 'seo:site_image';
+					$oCacheHandler->put($cache_key, $site_image_dimension);
+				}
+			}
 		}
 
 		return $config;
@@ -114,8 +132,12 @@ NASCRIPT;
 	{
 		$oModuleModel = getModel('module');
 
-		foreach ($this->triggers as $trigger) {
-			if (!$oModuleModel->getTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4])) return TRUE;
+		$seo_config = $this->getConfig();
+
+		if($seo_config->enable === 'Y') {
+			foreach ($this->triggers as $trigger) {
+				if (!$oModuleModel->getTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4])) return TRUE;
+			}
 		}
 
 		return FALSE;
@@ -126,9 +148,13 @@ NASCRIPT;
 		$oModuleModel = getModel('module');
 		$oModuleController = getController('module');
 
-		foreach ($this->triggers as $trigger) {
-			if (!$oModuleModel->getTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4])) {
-				$oModuleController->insertTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4]);
+		$seo_config = $this->getConfig();
+
+		if($seo_config->enable === 'Y') {
+			foreach ($this->triggers as $trigger) {
+				if (!$oModuleModel->getTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4])) {
+					$oModuleController->insertTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4]);
+				}
 			}
 		}
 

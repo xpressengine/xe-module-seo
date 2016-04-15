@@ -1,6 +1,5 @@
 <include target="_AdminHeader.html" />
 
-
 <form action="./" class="x_form-horizontal" ruleset="saveSetting" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="module" value="seo" />
 	<input type="hidden" name="act" value="procSeoAdminSaveSetting" />
@@ -10,8 +9,14 @@
 	<!--// general -->
 	<block cond="$setting_section == 'general'">
 		{@ $use_multilang = true}
-		<section class="section">
+		<section class="section default">
 			<h1>기본 설정</h1>
+			<div class="x_control-group default">
+				<label for="enable" class="x_control-label">기능 활성화</label>
+				<div class="x_controls">
+					<label><input type="checkbox" name="enable" id="enable" value="Y" checked="checked"|cond="$config->enable == 'Y'" /> 검색엔진 최적화 기능 사용</label>
+				</div>
+			</div>
 			<div class="x_control-group">
 				<label class="x_control-label" for="site_image">사이트 대표 이미지</label>
 				<div class="x_controls">
@@ -149,6 +154,23 @@
 		</div>
 	</div>
 </form>
+
+<script>
+jQuery(function($){
+	var config = $('.x_form-horizontal .default .x_control-group:not(.default), .x_form-horizontal .section:not(.default),.x_nav-tabs>li:not(.x_active)');
+	if(!$('#enable').is(':checked'))
+	{
+		config.hide();
+	}
+	$('#enable').change(function(){
+		if($(this).is(':checked')){
+			config.slideDown(200);
+		} else {
+			config.slideUp(200);
+		}
+	});
+});
+</script>
 
 <include target="../../module/tpl/include.multilang.html" />
 <include target="../../module/tpl/include.multilang.textarea.html" />

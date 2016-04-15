@@ -10,11 +10,13 @@ class seoAdminController extends seo
 
 		if ($vars->setting_section == 'general') {
 			// 기본 설정
+			$config->enable = ($vars->enable === 'Y') ? 'Y' : 'N';
 			$config->use_optimize_title = $vars->use_optimize_title;
 			$config->site_name = $vars->site_name;
 			$config->site_slogan = $vars->site_slogan;
 			$config->site_description = $vars->site_description;
 			$config->site_keywords = $vars->site_keywords;
+
 			if ($vars->site_image) {
 				$path = _XE_PATH_ . 'files/attach/site_image/';
 				$ext = strtolower(array_pop(explode('.', $vars->site_image['name'])));
@@ -55,6 +57,14 @@ class seoAdminController extends seo
 		$config->site_image_url = NULL;
 
 		$oModuleController->updateModuleConfig('seo', $config);
+
+		if($config->enable === 'Y') {
+			$this->moduleUpdate();
+		} else {
+			// Delete Triggers
+			$oModuleController = getController('module');
+			$oModuleController->deleteModuleTriggers('seo');
+		}
 
 		$this->setMessage('success_updated');
 		if (Context::get('success_return_url')) {
