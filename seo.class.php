@@ -130,7 +130,7 @@ NASCRIPT;
 
 	function moduleInstall()
 	{
-		return new BaseObject();
+		return $this->makeObject();
 	}
 
 	function checkUpdate()
@@ -163,7 +163,7 @@ NASCRIPT;
 			}
 		}
 
-		return new BaseObject(0, 'success_updated');
+		return $this->makeObject(0, 'success_updated');
 	}
 
 	function moduleUninstall()
@@ -174,7 +174,12 @@ NASCRIPT;
 			$oModuleController->deleteTrigger($trigger[0], $trigger[1], $trigger[2], $trigger[3], $trigger[4]);
 		}
 
-		return new BaseObject();
+		return $this->makeObject();
+	}
+
+	public function makeObject($code = 0, $message = 'success')
+	{
+		return class_exists('BaseObject') ? new BaseObject($code, $message) : new Object($code, $message);
 	}
 }
 /* !End of file */
